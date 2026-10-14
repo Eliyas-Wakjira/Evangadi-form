@@ -74,6 +74,7 @@ seenuu isaa eeyyami.
    repository GitHub kana walqabsiisi.
 2. **Base directory** `frontend` godhi.
 3. **Build command** `npm run build`; **Publish directory** `dist` godhi.
+   `netlify.toml` settings kana ofumaan qindeessa.
 4. Netlify site settings keessatti environment variable kana galchi:
 
    | Variable | Gatii |
@@ -81,6 +82,8 @@ seenuu isaa eeyyami.
    | `VITE_API_BASE_URL` | URL API Render Tarkaanfii 2 irraa, fakkeenyaaf `https://evangadi-forum-api.onrender.com` |
 
    Dhuma irratti `/api` hin dabaliin; frontend ofumaan itti dabala.
+   Gatiin kun yoo hin jirre production build ni kufa, kanaaf API URL localhost
+   irratti akka hin deemin.
 5. Deploy jalqabi. Vite variable kana build yeroo godhu bundle keessa kaa'a;
    kanaaf `VITE_API_BASE_URL` jijjiirte frontend irra deebi'ii build/deploy
    gochuu qabda.
