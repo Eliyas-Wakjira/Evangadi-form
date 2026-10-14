@@ -35,3 +35,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# ==========================================
+# 7. Zip / archive files
+# ==========================================
+*.zip
+*.tar.gz
+*.rar
