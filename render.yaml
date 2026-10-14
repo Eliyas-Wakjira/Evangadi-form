@@ -1,0 +1,67 @@
+# Render blueprint for the AI Powered Evangadi Forum API.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploy with: New > Blueprint > select this repository.
+# Deploy the Vite frontend separately on Netlify.
+#
+# Every `sync: false` value below must be typed into the Render dashboard when
+# prompted. Secrets are never stored in this file.
+
+services:
+  - type: web
+    name: evangadi-forum-api
+    runtime: node
+    rootDir: backend
+    plan: starter # Paid plan; switch to free if cold starts are acceptable.
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      # Supplied by Render automatically.
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+
+      # -------------------------------------------------------------
+      # Required - fill these in at deploy time
+      # -------------------------------------------------------------
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      # Enable when required by the hosted MySQL provider.
+      - key: DB_SSL
+        value: "false"
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true # Render generates a long random secret
+
+      # Set to the Netlify site origin after creating it, e.g.
+      # https://evangadi-forum.netlify.app
+      - key: FRONTEND_URL
+        sync: false
+
+      # Needed for AI-assisted features.
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        sync: false
+      - key: GEMINI_EMBEDDING_MODEL
+        sync: false
+      - key: GEMINI_FALLBACK_MODEL
+        sync: false
+
+      # Optional - required only for password reset emails.
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
