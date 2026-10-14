@@ -3,7 +3,6 @@ import {
   useLocation,
   useNavigate,
   Navigate,
-  useSearchParams,
   useParams,
 } from "react-router-dom";
 import { motion as Motion, AnimatePresence } from "framer-motion";
@@ -28,16 +27,10 @@ import styles from "./AuthPage.module.css";
 
 
 const AuthPage = () => {
-  const { isAuthenticated } = useAuth();
-   const { token } = useParams();
-
-  if (isAuthenticated && !token) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  const { token } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, register } = useAuth();
-  const [searchParams] = useSearchParams();
+  const { isAuthenticated, login, register } = useAuth();
   const [isResetPasswordMode, setIsResetPasswordMode] = useState(!!token);
   const [resetToken, setResetToken] = useState(token || "");
   const [isRegistering, setIsRegistering] = useState(false);
@@ -317,6 +310,11 @@ const AuthPage = () => {
     setError("");
     setSuccess("");
   };
+
+  // Redirect only after every hook has run so the hook order stays stable.
+  if (isAuthenticated && !token) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
    return (
      <div className={styles.page}>
