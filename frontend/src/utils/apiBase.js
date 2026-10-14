@@ -6,7 +6,9 @@
  * without a trailing `/api`; it is normalised here.
  */
 
-const DEFAULT_API_ORIGIN = "http://localhost:4000";
+// In production the Netlify site proxies `/api` and `/uploads` to the backend,
+// so the same origin is used unless an explicit URL is configured.
+const DEFAULT_API_ORIGIN = import.meta.env.DEV ? "http://localhost:4000" : "";
 
 const configuredBase =
   import.meta.env.VITE_API_BASE_URL ||
