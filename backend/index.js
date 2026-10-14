@@ -1,8 +1,6 @@
 import express from "express";
 import questionRoutes from "./src/routes/questionRoutes.js";
-// Importing and initializing the  automatic database initialization for authentication schema
 import { initializeDatabase } from "./src/config/initDb.js";
-await initializeDatabase();
 
 // for saved questions/bookmarks
 import bookmarkRoutes from "./src/routes/bookmarkRoutes.js";
@@ -83,6 +81,15 @@ app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
-app.listen(env.port, () => {
-  console.log(`AI Powered Evangadi Forum API is running on port ${env.port}.`);
+
+const startServer = async () => {
+  await initializeDatabase();
+  app.listen(env.port, () => {
+    console.log(`AI Powered Evangadi Forum API is running on port ${env.port}.`);
+  });
+};
+
+startServer().catch((error) => {
+  console.error("Failed to start the forum API:", error);
+  process.exit(1);
 });
