@@ -1,15 +1,11 @@
 import mysql from "mysql2/promise";
-import env from "./env.js";
+import { getDatabaseConnectionOptions } from "./databaseOptions.js";
 
 // Connect to the existing Evangadi Forum database
 export async function initializeDatabase() {
-  const connection = await mysql.createConnection({
-    host: env.database.host,
-    port: env.database.port,
-    user: env.database.user,
-    password: env.database.password,
-    database: env.database.name,
-  });
+  const connection = await mysql.createConnection(
+    getDatabaseConnectionOptions(),
+  );
 
   try {
     // Create the users table if it does not already exist

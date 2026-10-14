@@ -7,6 +7,11 @@ const numberFromEnv = (value, fallback) => {
   return Number.isFinite(parsed) ? parsed : fallback;
 };
 
+const frontendUrls = (process.env.FRONTEND_URL || "http://localhost:5173")
+  .split(",")
+  .map((url) => url.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
+
 const env = {
   port: process.env.PORT || 4000,
 
@@ -16,9 +21,13 @@ const env = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
+    ssl: process.env.DB_SSL === "true",
+    sslRejectUnauthorized:
+      process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false",
   },
   jwtSecret: process.env.JWT_SECRET,
-  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  frontendUrl: frontendUrls[0] || "http://localhost:5173",
+  frontendUrls,
 
   emailUser: process.env.EMAIL_USER,
   emailPass: process.env.EMAIL_PASS,

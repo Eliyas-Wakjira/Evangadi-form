@@ -10,7 +10,6 @@ import bookmarkRoutes from "./src/routes/bookmarkRoutes.js";
 
 // Import CORS.
 import cors from "cors";
-
 // Import our centralized environment configuration.
 import createQuestionRoutes from "./src/routes/createQuestionRoutes.js";
 import answerRoutes from "./src/routes/answerRoutes.js";
@@ -34,16 +33,43 @@ const __dirname = path.dirname(__filename);
 // ============================================================
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (
+        !origin ||
+        env.frontendUrls.includes(origin.replace(/\/+$/, ""))
+      ) {
+        callback(null, true);
+        return;
+      }
+
+      const error = new Error("Origin is not allowed by CORS.");
+      error.statusCode = 403;
+      callback(error);
+    },
+  }),
+);
 app.use(express.json({ limit: "100kb" }));
 
 // Serve uploaded assets (avatars, documents)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "AI Powered Evangadi Forum API is running.",
-  });
+app.get("/", async (req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    res.status(200).json({
+      success: true,
+      message: "AI Powered Evangadi Forum API is running.",
+      database: "up",
+    });
+  } catch (error) {
+    console.error("MySQL health check failed:", error.message);
+    res.status(503).json({
+      success: false,
+      message: "AI Powered Evangadi Forum API is running.",
+      database: "down",
+    });
+  }
 });
 
 app.use("/api/questions", questionRoutes);
@@ -57,16 +83,6 @@ app.use("/api/bookmarks", bookmarkRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(notFound);
 app.use(errorHandler);
-const testDatabaseConnection = async () => {
-  try {
-    const connection = await pool.getConnection();
-    connection.release();
-    console.log("MySQL database connected successfully.");
-  } catch (error) {
-    console.error("MySQL database connection failed:", error.message);
-  }
-};
-app.listen(env.port, async () => {
+app.listen(env.port, () => {
   console.log(`AI Powered Evangadi Forum API is running on port ${env.port}.`);
-  await testDatabaseConnection();
 });
