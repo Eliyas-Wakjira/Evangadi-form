@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getToken, removeToken } from "../utils/auth.js";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+import { API_BASE_URL } from "../utils/apiBase.js";
 
 // ============================================================
 // CREATE AXIOS CLIENT
